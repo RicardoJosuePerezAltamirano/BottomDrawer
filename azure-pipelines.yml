@@ -27,6 +27,8 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'PublicNugetBenjamin'
+    nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
+    allowPackageConflicts: true
