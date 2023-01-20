@@ -6,10 +6,18 @@
 
 trigger:
 - BottomDrawerMiguelBranch
-
+variables:
+  buildConfiguration: 'Release'
 pool:
   vmImage: ubuntu-latest
 steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: BottomDrawer/**/*.csproj
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
