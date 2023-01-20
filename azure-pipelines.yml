@@ -1,10 +1,11 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 
 trigger:
-- master
+- BottomDrawerMiguelBranch
 
 pool:
   vmImage: ubuntu-latest
@@ -13,5 +14,41 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+#- script: dotnet build --configuration $(buildConfiguration)
+#  displayName: 'dotnet build $(buildConfiguration)'
+  
+
+
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    #projects: '**/*.csproj'
+    projects: 'BottomDrawer/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+  # my working directory is src
+  
+
+# Package a project
+- task: DotNetCoreCLI@2
+  displayName: Package up the Assembly
+  inputs:
+    command: 'pack'
+    packagesToPack: 'BottomDrawer/**/*.csproj'
+    nobuild: true
+    verbosityPack: 'Normal'
+
+- task: NuGetAuthenticate@0
+  displayName: 'NuGet authenticate'
+
+# Push a project
+- task: NuGetCommand@2
+  displayName: 'Publish NuGet'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    publishVstsFeed: 'af2e86fe-2cee-437d-9bab-6fb66e7a5fd2'
+    nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
+    allowPackageConflicts: true
+
