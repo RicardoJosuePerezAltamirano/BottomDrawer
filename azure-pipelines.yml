@@ -41,6 +41,8 @@ steps:
 
 - task: NuGetAuthenticate@0
   displayName: 'NuGet authenticate'
+  inputs:
+    nuGetServiceConnections: PublicNugetBenjamin
 
 # Push a project
 - task: NuGetCommand@2
@@ -48,7 +50,9 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    publishVstsFeed: 'af2e86fe-2cee-437d-9bab-6fb66e7a5fd2'
-    nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
-    allowPackageConflicts: true
+    nuGetFeedType: external
+    publishFeedCredentials: nuget.org
+    #publishVstsFeed: 'af2e86fe-2cee-437d-9bab-6fb66e7a5fd2'
+    #nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
+    #allowPackageConflicts: true
 
