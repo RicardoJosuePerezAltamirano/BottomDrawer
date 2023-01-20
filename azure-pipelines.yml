@@ -42,7 +42,7 @@ steps:
 - task: NuGetAuthenticate@0
   displayName: 'NuGet authenticate'
   inputs:
-    nuGetServiceConnections: PublicNugetBenjamin
+    nuGetServiceConnections: 'PublicNugetBenjamin'
 
 # Push a project
 - task: NuGetCommand@2
