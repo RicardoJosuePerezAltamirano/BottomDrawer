@@ -9,32 +9,16 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-
-variables:
-  buildConfiguration: 'Release'
-  nupkgVersion: $(Build.BuildNumber)
-
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    packagesToPack: BottomDrawer/**/*.csproj
-    versioningScheme: byEnvVar
-    versionEnvVar: nupkgVersion
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet push'
-  inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: 'PublicNugetBenjamin'
-  enabled: false
 - task: NuGetCommand@2
-  displayName: 'NuGet push'
   inputs:
-    command: push
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: external
+    command: 'pack'
+    packagesToPack: 'BottomDrawer/**/*.csproj'
+    versioningScheme: 'off'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
     publishFeedCredentials: 'PublicNugetBenjamin'
