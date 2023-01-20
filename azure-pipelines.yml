@@ -12,6 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  nupkgVersion: $(Build.BuildNumber)
 
 steps:
 - task: DotNetCoreCLI@2
