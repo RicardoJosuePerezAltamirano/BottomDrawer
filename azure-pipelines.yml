@@ -14,45 +14,26 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-#- script: dotnet build --configuration $(buildConfiguration)
-#  displayName: 'dotnet build $(buildConfiguration)'
-  
-
-
-
 - task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: build
-    #projects: '**/*.csproj'
-    projects: 'BottomDrawer/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  # my working directory is src
-  
-
-# Package a project
+  displayName: 'dotnet build'
 - task: DotNetCoreCLI@2
-  displayName: Package up the Assembly
+  displayName: 'dotnet pack'
   inputs:
-    command: 'pack'
-    packagesToPack: 'BottomDrawer/**/*.csproj'
-    nobuild: true
-    verbosityPack: 'Normal'
-
-- task: NuGetAuthenticate@0
-  displayName: 'NuGet authenticate'
+    command: pack
+    packagesToPack: BottomDrawer/**/*.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: nupkgVersion
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet push'
   inputs:
-    nuGetServiceConnections: 'PublicNugetBenjamin'
-
-# Push a project
-- task: NuGetCommand@2
-  displayName: 'Publish NuGet'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    command: push
     nuGetFeedType: external
-    publishFeedCredentials: nuget.org
-    #publishVstsFeed: 'af2e86fe-2cee-437d-9bab-6fb66e7a5fd2'
-    #nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
-    #allowPackageConflicts: true
-
+    publishFeedCredentials: 'PublicNugetBenjamin'
+  enabled: false
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
+  inputs:
+    command: push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: external
+    publishFeedCredentials: 'PublicNugetBenjamin'
