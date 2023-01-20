@@ -13,17 +13,20 @@ pool:
   vmImage: ubuntu-latest
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+  displayName: Build
+  inputs:
+    command: build
+    #projects: '**/*.csproj'
+    projects: 'BottomDrawer/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
     command: pack
     packagesToPack: BottomDrawer/**/*.csproj
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'BottomDrawer/**/*.csproj'
-    versioningScheme: 'off'
+    nobuild: true
+    verbosityPack: 'Normal'
 
 - task: NuGetCommand@2
   inputs:
