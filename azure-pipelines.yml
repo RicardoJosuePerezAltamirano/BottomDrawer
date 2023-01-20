@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger:
+- BottomDrawerMiguelBranch
+
+variables:
+  buildConfiguration: 'Release'
+pool:
+  vmImage: ubuntu-latest
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: BottomDrawer/**/*.csproj
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'BottomDrawer/**/*.csproj'
+    versioningScheme: 'off'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'PublicNugetBenjamin'
+    nugetConfigPath: '$(Build.WorkingDirectory)/NuGet.config'
+    allowPackageConflicts: true
